@@ -28,13 +28,17 @@ def double_pendulum_derivatives(t, state):
 
     den = (m1 + m2) - m2 * cos_delta**2
 
-    num1 = -m2 * L2 * w2**2 * sin_delta * cos_delta - m2 * g * np.sin(th2) * cos_delta \
+    num1 = -m2 * L1 * w1**2 * sin_delta * cos_delta \
+           + m2 * g * np.sin(th2) * cos_delta \
+           - m2 * L2 * w2**2 * sin_delta \
            - (m1 + m2) * g * np.sin(th1)
-    dw1 = num1 / ((m1 + m2) * L1 - m2 * L1 * cos_delta**2)
+    dw1 = num1 / (L1 * den)
     
-    num2 = (m1 + m2) * L1 * w1**2 * sin_delta + (m1 + m2) * g * np.sin(th1) * cos_delta \
-           + m2 * L2 * w2**2 * sin_delta * cos_delta**2
-    dw2 = num2 / (m2 * L2 - m2 * L2 * cos_delta**2)
+    num2 = (m1 + m2) * L1 * w1**2 * sin_delta \
+           + (m1 + m2) * g * np.sin(th1) * cos_delta \
+           + m2 * L2 * w2**2 * sin_delta * cos_delta \
+           - (m1 + m2) * g * np.sin(th2)
+    dw2 = num2 / (L2 * den)
     
     # Return
     return [w1, dw1, w2, dw2] 
