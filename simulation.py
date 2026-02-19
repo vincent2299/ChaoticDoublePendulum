@@ -75,3 +75,42 @@ def get_xy_coords(solution):
 
 x1_a, y1_a, x2_a, y2_a = get_xy_coords(sol1)
 x1_b, y1_b, x2_b, y2_b = get_xy_coords(sol2)
+
+# animate the chaos
+# use matplotlib.animation to draw the frames. I will draw Pendulum A in Blue, and Pendulum B in Red.
+
+# Set up the figure
+fig, ax = plt.subplots(figsize=(6, 6))
+ax.set_xlim(-(L1 + L2 + 0.5), L1 + L2 + 0.5)
+ax.set_ylim(-(L1 + L2 + 0.5), L1 + L2 + 0.5)
+ax.set_aspect('equal')
+ax.grid()
+ax.set_title("Chaotic Double Pendulum\nRed is offset by 0.05° from Blue")
+
+# Initialize the lines for the pendulums and their trails
+line1, = ax.plot([],[], 'o-', color='blue', lw=2, markersize=6, label='Pendulum 1')
+line2, = ax.plot([],[], 'o-', color='red', lw=2, markersize=4, label='Pendulum 2')
+trail1, = ax.plot([],[], '-', color='blue', alpha=0.3, lw=1)
+trail2, = ax.plot([],[], '-', color='red', alpha=0.3, lw=1)
+ax.legend(loc="upper left")
+
+# History length for the trails
+trail_length = 30 
+
+def animate(i):
+    # Plot Pendulum 1
+    line1.set_data([0, x2_a[i]], [0, y2_a[i]])
+    # Plot Pendulum 2
+    line2.set_data([0, x2_b[i]], [0, y2_b[i]])
+    
+    # Plot Trails (the paths of the bottom bobs)
+    start_idx = max(0, i - trail_length)
+    trail1.set_data(x2_a[start_idx:i], y2_a[start_idx:i])
+    trail2.set_data(x2_b[start_idx:i], y2_b[start_idx:i])
+    
+    return line1, line2, trail1, trail2
+
+# Create the animation
+ani = animation.FuncAnimation(fig, animate, frames=len(t_eval), interval=1000/60, blit=True)
+
+plt.show()
