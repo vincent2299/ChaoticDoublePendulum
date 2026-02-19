@@ -38,3 +38,40 @@ def double_pendulum_derivatives(t, state):
     # Return
     return 
 
+# set the intial conditions and solve the equations of motion
+# also need to define the time span for the simulation
+
+
+# Time span for the simulation (0 to 20 seconds, 60 frames per second)
+t_span = (0, 20)
+t_eval = np.linspace(t_span[0], t_span[1], t_span[1] * 60)
+
+# Initial conditions
+# Angles are in radians. Let's start them almost horizontal.
+initial_state_1 = [np.radians(120), 0, np.radians(-10), 0]  # [theta1, omega1, theta2, omega2]
+
+# The second pendulum is offset by just 0.05 degrees!
+offset = np.radians(0.05)
+initial_state_2 = [initial_state_1[0] + offset, initial_state_1[1], initial_state_1[2] + offset, initial_state_1[3]]
+
+# Solve the differential equations
+sol1 = solve_ivp(double_pendulum_derivatives, t_span, initial_state_1, t_eval=t_eval, method='Radau')
+sol2 = solve_ivp(double_pendulum_derivatives, t_span, initial_state_2, t_eval=t_eval, method='Radau')
+
+# convert polar angles to cartesian coordinates for animation
+def get_xy_coords(solution):
+    th1 = solution.y
+    th2 = solution.y
+    
+    # First bob (x1, y1)
+    x1 = L1 * np.sin(th1)
+    y1 = -L1 * np.cos(th1)
+    
+    # Second bob (x2, y2)
+    x2 = x1 + L2 * np.sin(th2)
+    y2 = y1 - L2 * np.cos(th2)
+    
+    return x1, y1, x2, y2
+
+x1_a, y1_a, x2_a, y2_a = get_xy_coords(sol1)
+x1_b, y1_b, x2_b, y2_b = get_xy_coords(sol2)
