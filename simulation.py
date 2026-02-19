@@ -110,8 +110,8 @@ def animate(i):
     
     # Plot Trails (the paths of the bottom bobs)
     start_idx = max(0, i - trail_length)
-    trail1.set_data(x2_a[start_idx:i], y2_a[start_idx:i])
-    trail2.set_data(x2_b[start_idx:i], y2_b[start_idx:i])
+    trail1.set_data(x2_a, y2_a)
+    trail2.set_data(x2_b, y2_b)
     
     return line1, line2, trail1, trail2
 
