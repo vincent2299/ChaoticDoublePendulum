@@ -20,19 +20,21 @@ def double_pendulum_derivatives(t, state):
     th1, w1, th2, w2 = state
 
     delta = th2 - th1
+    cos_delta = np.cos(delta)
+    sin_delta = np.sin(delta)
 
     # equations of motion derived from Lagrangian mechanics
     # for a double pendulum system
 
-    den = (2*m1+m2) - m2 * np.cos(2*delta)
+    den = (m1 + m2) - m2 * cos_delta**2
 
-    num1 = -g * (2 * m1 + m2) * np.sin(th1) - m2 * g * np.sin(th1 - 2 * th2) \
-           - 2 * np.sin(delta) * m2 * (w2**2 * L2 + w1**2 * L1 * np.cos(delta))
-    dw1 = num1 / (L1 * den)
+    num1 = -m2 * L2 * w2**2 * sin_delta * cos_delta - m2 * g * np.sin(th2) * cos_delta \
+           - (m1 + m2) * g * np.sin(th1)
+    dw1 = num1 / ((m1 + m2) * L1 - m2 * L1 * cos_delta**2)
     
-    num2 = 2 * np.sin(delta) * (w1**2 * L1 * (m1 + m2) + g * (m1 + m2) * np.cos(th1) \
-           + w2**2 * L2 * m2 * np.cos(delta))
-    dw2 = num2 / (L2 * den)
+    num2 = (m1 + m2) * L1 * w1**2 * sin_delta + (m1 + m2) * g * np.sin(th1) * cos_delta \
+           + m2 * L2 * w2**2 * sin_delta * cos_delta**2
+    dw2 = num2 / (m2 * L2 - m2 * L2 * cos_delta**2)
     
     # Return
     return [w1, dw1, w2, dw2] 
