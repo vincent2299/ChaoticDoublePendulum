@@ -28,15 +28,17 @@ def double_pendulum_derivatives(t, state):
 
     den = (m1 + m2) - m2 * cos_delta**2
 
-    num1 = -m2 * L1 * w1**2 * sin_delta * cos_delta \
+    # BUG FIXED HERE: The w1**2 and w2**2 terms had the wrong signs!
+    # They are now properly pushing the pendulums outward instead of inward.
+    num1 = m2 * L1 * w1**2 * sin_delta * cos_delta \
            + m2 * g * np.sin(th2) * cos_delta \
-           - m2 * L2 * w2**2 * sin_delta \
+           + m2 * L2 * w2**2 * sin_delta \
            - (m1 + m2) * g * np.sin(th1)
     dw1 = num1 / (L1 * den)
     
-    num2 = (m1 + m2) * L1 * w1**2 * sin_delta \
+    num2 = - (m1 + m2) * L1 * w1**2 * sin_delta \
            + (m1 + m2) * g * np.sin(th1) * cos_delta \
-           + m2 * L2 * w2**2 * sin_delta * cos_delta \
+           - m2 * L2 * w2**2 * sin_delta * cos_delta \
            - (m1 + m2) * g * np.sin(th2)
     dw2 = num2 / (L2 * den)
     
@@ -49,7 +51,7 @@ def double_pendulum_derivatives(t, state):
 
 # Time span for the simulation (0 to 20 seconds, 60 frames per second)
 t_span = (0, 20)
-t_eval = np.linspace(t_span, t_span, int(t_span * 60))
+t_eval = np.linspace(t_span[0], t_span[1], int(t_span[1] * 60))
 
 # Initial conditions
 # Angles are in radians. Let's start them almost horizontal.
@@ -99,19 +101,15 @@ trail1, = ax.plot([],[], '-', color='blue', alpha=0.3, lw=1)
 trail2, = ax.plot([],[], '-', color='red', alpha=0.3, lw=1)
 ax.legend(loc="upper left")
 
-# History length for the trails
-trail_length = 30 
-
 def animate(i):
     # Plot Pendulum 1
     line1.set_data([0, x1_a[i], x2_a[i]], [0, y1_a[i], y2_a[i]])
     # Plot Pendulum 2
     line2.set_data([0, x1_b[i], x2_b[i]], [0, y1_b[i], y2_b[i]])
     
-    # Plot Trails (the paths of the bottom bobs)
-    start_idx = max(0, i - trail_length)
-    trail1.set_data(x2_a, y2_a)
-    trail2.set_data(x2_b, y2_b)
+    # Plot Trails (the paths of the bottom bobs) - builds up over time
+    trail1.set_data(x2_a[:i+1], y2_a[:i+1])
+    trail2.set_data(x2_b[:i+1], y2_b[:i+1])
     
     return line1, line2, trail1, trail2
 
