@@ -49,7 +49,7 @@ def double_pendulum_derivatives(t, state):
 
 # Time span for the simulation (0 to 20 seconds, 60 frames per second)
 t_span = (0, 20)
-t_eval = np.linspace(t_span[0], t_span[1], t_span[1] * 60)
+t_eval = np.linspace(t_span, t_span, int(t_span * 60))
 
 # Initial conditions
 # Angles are in radians. Let's start them almost horizontal.
