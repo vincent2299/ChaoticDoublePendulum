@@ -36,7 +36,7 @@ def double_pendulum_derivatives(t, state):
     dw2 = num2 / (L2 * den2)
     
     # Return
-    return 
+    return [w1, dw1, w2, dw2] 
 
 # set the intial conditions and solve the equations of motion
 # also need to define the time span for the simulation
@@ -60,8 +60,8 @@ sol2 = solve_ivp(double_pendulum_derivatives, t_span, initial_state_2, t_eval=t_
 
 # convert polar angles to cartesian coordinates for animation
 def get_xy_coords(solution):
-    th1 = solution.y
-    th2 = solution.y
+    th1 = solution.y[0]
+    th2 = solution.y[2]
     
     # First bob (x1, y1)
     x1 = L1 * np.sin(th1)
@@ -99,9 +99,9 @@ trail_length = 30
 
 def animate(i):
     # Plot Pendulum 1
-    line1.set_data([0, x2_a[i]], [0, y2_a[i]])
+    line1.set_data([0, x1_a[i], x2_a[i]], [0, y1_a[i], y2_a[i]])
     # Plot Pendulum 2
-    line2.set_data([0, x2_b[i]], [0, y2_b[i]])
+    line2.set_data([0, x1_b[i], x2_b[i]], [0, y1_b[i], y2_b[i]])
     
     # Plot Trails (the paths of the bottom bobs)
     start_idx = max(0, i - trail_length)
