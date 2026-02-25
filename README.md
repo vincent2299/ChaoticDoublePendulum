@@ -2,7 +2,7 @@
 
 A physics simulation of a chaotic double pendulum demonstrating sensitive dependence on initial conditions.
 
-![Double Pendulum Simulation](chaoticpendulum.png)
+<![Double Pendulum Simulation](chaoticpendulum.png) align="center" width="600" height="400">
 
 ## Overview
 
